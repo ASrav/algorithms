@@ -1,0 +1,176 @@
+import java.util.Scanner;
+class Point
+{
+    int x;int y;
+    Point(int x,int y)
+    {
+        this.x=x;
+        this.y=y;
+    }
+}
+class QuickHull
+{
+    boolean mark[];int n,hull[],h;
+    QuickHull(Point[] points,int n)
+    {
+        this.n=n;
+        hull=new int[n];
+        mark=new boolean[n];
+        for(int i=0;i<n;i++)
+            mark[i]=false;
+        int l=0;
+        h=0;
+        for(int i=0;i<n;i++)
+        {
+            if(points[i].x<points[l].x)	//to find the least x-coordinate
+                l=i;
+        }
+        int m=0;
+        for(int i=0;i<n;i++)
+        {
+            if(points[i].x>points[m].x)	//to find the largest x-coordinate
+                m=i;
+        }
+        mark[l]=true;
+        mark[m]=true;
+        upperHull(points,l,m);
+        lowerHull(points,l,m);
+
+        System.out.println("Given points");
+        for(int i=0;i<n;i++)
+        {
+        	if(mark[i])
+        		hull[h++]=i;
+            System.out.println("("+points[i].x+","+points[i].y+")");
+        }
+	
+/*        for(int i=0;i<h;i++)
+        {
+		System.out.println("("+points[hull[i]].x+","+points[hull[i]].y+")");
+	}
+  */     // boundaryPoints(points);
+        
+        System.out.println("Hull points");
+        for(int i=0;i<n;i++)
+        {
+            if(mark[i])
+                System.out.println("("+points[i].x+","+points[i].y+")");
+        }
+    }
+    void boundaryPoints(Point[] points)
+    {
+    //(points[i].x==points[j].x)&&(points[i].x==points[k].x))
+    	for(int i=0;i<h;i++)
+        {
+        	for(int j=0;j<h;j++)
+	        	for(int k=0;k<n;k++)
+        			if(!mark[k])//&&orient(points[hull[i]],points[hull[k]],points[hull[j]])==0)
+        			{
+        				if(((points[hull[i]].y==points[hull[j]].y)&&(points[hull[i]].y==points[k].y))||((points[hull[i]].x==points[hull[j]].x)&&(points[hull[i]].x==points[k].x)))
+        				{
+		                        System.out.println("Hello ("+points[k].x+","+points[k].y+")");			
+        				mark[k]=true;
+        				}
+        			}
+        }
+    }
+    void upperHull(Point[] points,int l,int m)
+    {
+        int t=0;double area=0,big=0;
+        for(int i=0;i<n;i++)
+        {
+            if((!mark[i])&&(orient(points[l],points[i],points[m])>0)) //orient()>0 means the pt i lies to the left side of the line  
+            {							       //joining points l & m	
+                double b=area(points[l],points[i],points[m]);
+                if(b>=big)
+                {
+                    t=i;
+                    big=b;
+                }
+            }
+        }
+       	mark[t]=true;boolean fl=false;
+        for(int i=0;i<n;i++)
+        {
+            if((!mark[i])&&(orient(points[l],points[i],points[t])>0))
+                    fl=true;
+        }
+        if(fl)
+            upperHull(points,l,t);
+        fl=false;
+        for(int i=0;i<n;i++)
+        {
+            if((!mark[i])&&(orient(points[t],points[i],points[m])>0))
+                fl=true;
+        }
+        if(fl)
+            upperHull(points,t,m);
+    }
+    
+    double area(Point p,Point q,Point r)	//to find the area between the given 3 pts
+    {
+    	double val;
+    	val=(p.x*(q.y-r.y))+(q.x*(r.y-p.y))+(r.x*(p.y-q.y));
+        if(val<0)
+        	return -1*(val/2);
+        return val/2;
+    }
+
+    int orient(Point p,Point q,Point r)	//to find if a pt q lies to the left or right of line seqment joining p & r
+    {
+        int val=(q.y-p.y)*(r.x-q.x)-(q.x-p.x)*(r.y-q.y);
+        return val;
+    }
+
+    void lowerHull(Point[] points,int l,int m)
+    {
+        int t=0;double area=0,big=0;
+        for(int i=0;i<n;i++)
+        {
+            if((!mark[i])&&(orient(points[l],points[i],points[m])<0))
+            {
+                double b=area(points[l],points[i],points[m]);
+                if(b>=big)
+                {
+                    t=i;
+                    big=b;
+                }
+            }
+        }
+        mark[t]=true;boolean fl=false;
+        for(int i=0;i<n;i++)
+        {
+            if((!mark[i])&&(orient(points[l],points[i],points[t])<0))
+                    fl=true;
+        }
+        if(fl)
+            lowerHull(points,l,t);
+        fl=false;
+        for(int i=0;i<n;i++)
+        {
+            if((!mark[i])&&(orient(points[t],points[i],points[m])<0))
+                fl=true;
+        }
+        if(fl)
+            lowerHull(points,t,m);
+    }
+}
+public class convexHull1
+{
+    public static void main(String[] args)
+    {
+        Scanner sc=new Scanner(System.in);
+        Point[] points;
+        System.out.print("Enter the number of points: ");
+        int n=sc.nextInt();
+        System.out.println("Enter the points: ");        
+        points=new Point[n];
+        for(int i=0;i<n;i++)
+        {
+            int x=sc.nextInt();
+            int y=sc.nextInt();
+            points[i]=new Point(x,y);
+        }
+        QuickHull q=new QuickHull(points,n);
+    }
+}
