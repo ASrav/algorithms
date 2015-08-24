@@ -1,0 +1,97 @@
+import java.io.*;
+import java.util.*;
+import java.lang.*;
+class LCS
+{
+	Scanner sc = new Scanner(System.in);
+	String s1,s2,resultant="\0";
+	int l1,l2,rLength,find[][];
+	void getSequences()
+	{
+		System.out.print("Enter two sequences: ");
+		s1=sc.next();
+		s2=sc.next();
+		l1=s1.length();
+		l2=s2.length();
+		find=new int[l2+1][l1+1];
+		for(int i=0;i<=l1;i++)
+		{
+			find[0][i]=0;
+		}
+		for(int i=0;i<=l2;i++)
+		{
+			find[i][0]=0;
+		}
+	}
+	void findMat()
+	{
+		for(int i=1;i<=l2;i++)
+		{
+			for(int j=1;j<=l1;j++)
+			{
+				if(s2.charAt(i-1)==s1.charAt(j-1))
+					find[i][j]=find[i-1][j-1]+1;
+				else
+					find[i][j]=maximum(find[i-1][j],find[i][j-1]);	
+			}
+		}
+		for(int i=0;i<=l2;i++)
+		{
+			System.out.println();
+			for(int j=0;j<=l1;j++)
+				System.out.print(find[i][j]+"\t");
+		}
+		rLength=find[l2][l1];		
+		System.out.println("\n\nLength of LCS: "+rLength);
+		findLCS();
+	}
+	void findLCS()
+	{
+		int k=rLength-1;
+		int i=l2;
+		int j=l1;
+		while(i>=0)
+		{
+			while(j>=0)
+			{
+				
+				if(find[i][j]!=0)
+				{
+					if(s2.charAt(i-1)==s1.charAt(j-1))
+					{
+						resultant=s1.charAt(j-1)+resultant;
+						i--;
+						j--;k--;
+					}
+					else
+					{
+						if(find[i][j-1]>find[i-1][j])
+							j--;
+						else
+							i--;
+					}
+				}	
+				else
+				{
+					i=-1;
+					break;	
+				}
+			}
+		}
+		System.out.println("\nLCS: "+resultant);
+	}
+	int maximum(int a,int b)
+	{
+		return a>b?a:b;
+	}
+}
+public class lcs
+{
+	public static void main(String[] args)
+	{
+		LCS l=new LCS();
+		l.getSequences();
+		l.findMat();	
+		
+	}
+}
