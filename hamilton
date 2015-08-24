@@ -1,0 +1,81 @@
+import java.util.*;
+class GRAPH
+{
+	public int g[][],size;
+	Scanner sc=new Scanner(System.in);
+	GRAPH(int n)
+	{
+		size=n;
+		g=new int[n][n];
+		for(int i=0;i<n;i++)
+			for(int j=0;j<n;j++)
+				g[i][j]=0;
+	}
+	void createGraph()
+	{
+		System.out.println("Enter the edges: ");
+		int h=sc.nextInt();
+		int t=sc.nextInt();
+		while(h<size && t<size)
+		{
+			g[h][t]=1;
+			g[t][h]=1;
+			h=sc.nextInt();
+			t=sc.nextInt();
+		}
+	}
+}
+public class hamiltonian
+{
+	int x[]=new int[6],n;
+	GRAPH gr=new GRAPH(5);
+	hamiltonian()
+	{
+		n=gr.size;
+		gr.createGraph();
+	}
+	void findPath(int k,int j)
+	{
+		for(int i=0;i<n;i++)
+		{
+			if(bound(k,i))
+			{
+				x[j]=k;
+				if(k==n-1)
+					printGraph();
+				else
+					findPath(k+1,j+1);
+			}
+		}
+	}
+	void printGraph()
+	{
+		System.out.println("\n\n");
+		for(int i=0;i<n;i++)
+			System.out.println(x[i]+"\t");
+	}
+	boolean bound(int k,int j)
+	{
+		int flag=0,i=0;
+		if(k<n-1)
+		{	
+			for(i=0;i<k;i++)
+				if(gr.g[i][k]!=1 || k==x[j])
+					flag++;
+		}
+		else
+			if(k==x[0])
+				return true;
+		System.out.println(flag+"\n");
+		if(flag==i)
+			return false;
+		else
+			return true;
+	}
+	public static void main(String args[])
+	{
+		hamiltonian cg=new hamiltonian();
+		System.out.println("The possible paths are:");			
+		cg.findPath(0,0);
+	}
+}
