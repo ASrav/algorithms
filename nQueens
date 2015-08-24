@@ -1,0 +1,74 @@
+import java.util.*;
+public class nQueens
+{
+	int board[][],order;
+	int col[];
+	int inf=9999;
+	nQueens(int n)
+	{
+		order=n;
+		board=new int[order][order];
+		col=new int[order];
+		for(int i=0;i<order;i++)
+		{
+			for(int j=0;j<order;j++)
+				board[i][j]=9999;
+			col[i]=inf;
+		}	
+	}
+	void placeQueens(int k)
+	{
+		for(int i=0;i<order;i++)
+		{
+			if(bound(i,k))
+			{
+				col[k]=i;
+				if(k==order-1)
+                		{
+		                    printBoard();
+                		}
+				else
+					placeQueens(k+1);
+					
+			}
+		}
+	}
+	boolean bound(int i,int k)
+	{
+		for(int j=0;j<k;j++)
+			if((abs(j,k)==abs(col[j],i))||(col[j]==i))
+				return false;
+		return true;
+	}
+	void printBoard()
+	{
+		for(int i=0;i<order;i++)
+			for(int j=0;j<order;j++)
+				board[i][j]=inf;
+		for(int i=0;i<order;i++)
+			board[i][col[i]]=i;
+		for(int i=0;i<order;i++)
+		{
+			for(int j=0;j<order;j++)
+			{
+				if(board[i][j]==inf)	
+					System.out.print("--\t");
+				else
+					System.out.print(board[i][j]+"\t");
+			}	
+			System.out.println("\n\n");
+		}
+		System.out.print("*****************************\n");
+	}
+	int abs(int a,int b)
+	{
+		int k=a-b;
+		return (k<0)?(b-a):(a-b);
+	}
+	public static void main(String args[])
+	{
+		nQueens q=new nQueens(5);
+		q.placeQueens(0);
+//		q.printBoard();
+	}
+}
